@@ -1,0 +1,13 @@
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.add-btn {
+    position: absolute;
+    bottom: 50px;
+    right: 50px;
+}

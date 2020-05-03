@@ -1,0 +1,18 @@
+<div class="container" [ngClass]="{'predeccessors': node.Predeccessors.length > 0 , 'successors':  node.Successors.length > 0}">
+
+    <div class="predeccessors-line-end" *ngIf="node.Predeccessors.length > 0"></div>
+    <div  class="successors-line-start" (click)="getAvailableNodes()">
+        <mat-icon class="add-icon">
+            add
+        </mat-icon>
+    </div>
+</div>
+
+
+<mat-menu>
+    <ng-template let-nodes="nodes" let-node="node">
+        <ng-container *ngFor="let successor of nodes">
+            <button mat-menu-item>{{successor.Name}}</button>
+        </ng-container>
+    </ng-template>
+</mat-menu>

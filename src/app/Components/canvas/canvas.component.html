@@ -1,0 +1,16 @@
+<div class="canvas">
+
+    <!-- Generate for each node a component and display it inside the canvas -->
+    <div *ngFor="let node of nodes"
+     cdkDrag
+     (cdkDragStarted)="startDraggingNode(node , $event)"
+     (cdkDragEnded)="endDraggingNode(node , $event)"
+     class="node">
+        <app-canvas-node [node]="node"></app-canvas-node>
+    </div>
+
+    <!-- Svg to display the lines between the nodes -->
+    <svg  #svg class="line-svg">
+    </svg>
+
+</div>

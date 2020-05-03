@@ -1,0 +1,41 @@
+.container {
+    height: 80px;
+    width: 200px;
+    position: relative;
+    border: 2px solid black;
+}
+
+.predeccessors-line-end {
+    position: absolute;
+    border: 4px black solid;
+    border-radius: 50%;
+    top: calc(50% - 4px);
+    left: -4px;
+}
+
+.successors-line-start {
+    position: absolute;
+    border: 4px black solid;
+    border-radius: 50%;
+    top: calc(50% - 4px);
+    left: calc(100% - 4px);
+
+    .add-icon {
+        display: none;
+    }
+}
+
+.container:hover {
+    .add-icon {
+        display: block;
+    }
+
+    .successors-line-start {
+        background-color: white;
+        top: calc(50% - 16px);
+        left: calc(100% - 10px);
+
+    }
+
+}
+
