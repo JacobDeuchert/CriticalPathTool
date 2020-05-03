@@ -17,4 +17,6 @@ export class CanvasNode  {
     // Array of ids of nodes before this node
     Predeccessors: string[];
 
+    Duration: number;
+
 }

@@ -6,7 +6,7 @@
      (cdkDragStarted)="startDraggingNode(node , $event)"
      (cdkDragEnded)="endDraggingNode(node , $event)"
      class="node">
-        <app-canvas-node [node]="node"></app-canvas-node>
+        <app-canvas-node [node]="node" (delete)="deleteNode($event)"></app-canvas-node>
     </div>
 
     <!-- Svg to display the lines between the nodes -->

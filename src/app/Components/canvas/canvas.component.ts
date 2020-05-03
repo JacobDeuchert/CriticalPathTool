@@ -74,6 +74,51 @@ export class CanvasComponent implements OnChanges {
 
   }
 
+  public connectNodes(fromNode: CanvasNode, toNode: CanvasNode): void {
+    fromNode.Successors.push(toNode.Id);
+    toNode.Predeccessors.push(fromNode.Id);
+
+
+    this._createLineBetweenNodes(fromNode, toNode);
+  }
+
+  public disconnectNodes(fromNode: CanvasNode, toNode: CanvasNode): void {
+    const fromIndex = toNode.Predeccessors.indexOf(fromNode.Id);
+    toNode.Predeccessors.splice(fromIndex , 1);
+
+    const toIndex = fromNode.Successors.indexOf(toNode.Id);
+    fromNode.Successors.splice(toIndex , 1);
+
+    this._destroyLineBeweenNodes(fromNode, toNode);
+
+  }
+
+  public deleteNode(node: CanvasNode): void {
+    const nodeIndex = this.nodes.indexOf(node);
+
+    node.Predeccessors.forEach(id => {
+      const predeccessor = this._getNodeById(id);
+
+      const indexInPredeccessor = predeccessor.Successors.indexOf(node.Id);
+
+      predeccessor.Successors.splice(indexInPredeccessor , 1); 
+
+      this._destroyLineBeweenNodes(predeccessor, node);
+    });
+
+    node.Successors.forEach(id => {
+      const successor = this._getNodeById(id);
+
+      const indexInSuccessor = successor.Predeccessors.indexOf(node.Id);
+
+      successor.Predeccessors.splice(indexInSuccessor , 1); 
+
+      this._destroyLineBeweenNodes(node, successor);
+    });
+
+    this.nodes.splice(nodeIndex, 1);
+  }
+
   private _setupLines(nodes: CanvasNode[]): void {
     nodes.forEach(node => {
 
@@ -87,7 +132,7 @@ export class CanvasComponent implements OnChanges {
 
   public getAvailableNodes(node: CanvasNode): CanvasNode[] {
     const nodesInPath = this._getNodesInPath(node);
-    return this.nodes.filter( x => !nodesInPath.includes(x) && !node.Successors.includes(x.Id));
+    return this.nodes.filter( x => !nodesInPath.includes(x));
   }
 
 
@@ -130,10 +175,10 @@ export class CanvasComponent implements OnChanges {
     line.style.stroke = color;
 
     line.setAttribute('x1', (x1 + 200).toString());
-    line.setAttribute('y1', (y1 + 40).toString());
+    line.setAttribute('y1', (y1 + 42).toString());
 
     line.setAttribute('x2', x2.toString());
-    line.setAttribute('y2', (y2 + 40).toString());
+    line.setAttribute('y2', (y2 + 42).toString());
 
     this.svg.nativeElement.appendChild(line);
   }

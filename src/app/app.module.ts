@@ -6,11 +6,14 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input'
 import {MatMenuModule} from '@angular/material/menu'
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations'
+import {MatSelectModule} from '@angular/material/select';
 
 import { AppComponent } from './app.component';
 import { CanvasComponent } from './Components/canvas/canvas.component';
 import { CanvasNodeComponent } from './Components/canvas-node/canvas-node.component';
 import { HeaderComponent } from './Components/header/header.component';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -22,12 +25,15 @@ import { HeaderComponent } from './Components/header/header.component';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     MatToolbarModule,
     DragDropModule,
     MatButtonModule,
     MatIconModule,
     MatInputModule,
-    MatMenuModule
+    MatMenuModule,
+    FormsModule,
+    MatSelectModule
   ],
   providers: [],          
   bootstrap: [AppComponent]
