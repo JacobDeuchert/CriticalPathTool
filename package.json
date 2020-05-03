@@ -1,5 +1,5 @@
 {
-  "name": "netzplan-app",
+  "name": "CriticalPathTool",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
