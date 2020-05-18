@@ -61,3 +61,27 @@ input::placeholder {
         display: none;
     }
 }
+
+.badge {
+    position: absolute;
+}
+
+.badge-top-left {
+    top: -25px;
+    left: 5px;
+}
+
+.badge-top-right {
+    top: -25px;
+    right: 5px;
+}
+
+.badge-bottom-right {
+    bottom: -25px;
+    right: 5px;
+}
+
+.badge-bottom-left {
+    bottom: -25px;
+    left: 5px;
+}

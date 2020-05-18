@@ -14,6 +14,8 @@ export class CanvasNodeComponent implements AfterViewInit {
 
   @Output() delete: EventEmitter<CanvasNode>;
 
+  @Output() durationChanged: EventEmitter<CanvasNode>;
+
   public availableNodes: CanvasNode[];
 
   constructor(public elementRef: ElementRef<HTMLElement> , private canvasComponent: CanvasComponent) { 

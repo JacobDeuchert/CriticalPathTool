@@ -147,7 +147,6 @@ export class CanvasComponent implements OnChanges {
   }
 
 
-
   private _destroyLineBeweenNodes(fromNode: CanvasNode, toNode: CanvasNode): void {
     const lineId = `${fromNode.Id}_${toNode.Id}`;
     const line = document.getElementById(lineId);

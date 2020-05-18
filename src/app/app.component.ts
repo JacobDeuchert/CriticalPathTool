@@ -29,7 +29,11 @@ export class AppComponent {
       Successors: [],
       X: 0,
       Y: 0,
-      Duration: null
+      Duration: null,
+      earliestStart: null,
+      earlisteEnd: null,
+      latestEnd: null,
+      latestStart: null
     }
 
     this.nodes.push(newNode);

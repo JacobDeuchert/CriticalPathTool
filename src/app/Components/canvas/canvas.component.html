@@ -1,8 +1,9 @@
-<div class="canvas">
+<div class="canvas example-boundary" >
 
     <!-- Generate for each node a component and display it inside the canvas -->
     <div *ngFor="let node of nodes"
      cdkDrag
+     cdkDragBoundary=".canvas"
      (cdkDragStarted)="startDraggingNode(node , $event)"
      (cdkDragEnded)="endDraggingNode(node , $event)"
      class="node">
