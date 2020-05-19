@@ -119,6 +119,11 @@ export class CanvasComponent implements OnChanges {
     this.nodes.splice(nodeIndex, 1);
   }
 
+  public calculateBuffer(): void {
+    this.
+
+  }
+
   private _setupLines(nodes: CanvasNode[]): void {
     nodes.forEach(node => {
 
@@ -184,6 +189,18 @@ export class CanvasComponent implements OnChanges {
 
   private _getNodeById(id: string): CanvasNode {
     return this.nodes.find(x => x.Id === id);
+  }
+
+  private _getEarliestStart(node: CanvasNode): number {
+
+    const highestPredecLE = node.Predeccessors.map(
+       predecessor => this._getEarliestStart(this._getNodeById(predecessor)))
+       .sort((a, b) => b - a)[0] ?? 0;
+
+    node.earliestStart = highestPredecLE;
+    node.earliestEnd = highestPredecLE + node.Duration;   
+
+    return node.earliestEnd;
   }
 
 

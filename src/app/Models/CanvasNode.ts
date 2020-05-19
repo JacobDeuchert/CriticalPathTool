@@ -7,10 +7,13 @@ export class CanvasNode  {
     public Duration: number;
 
     public earliestStart: number;
-    public earlisteEnd: number;
+    public earliestEnd: number;
 
     public latestStart: number;
     public latestEnd: number;
+
+    public totalBuffer: number;
+    public freeBuffer: number;
 
     // position
     public X: number;

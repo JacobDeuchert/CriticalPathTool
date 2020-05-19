@@ -31,7 +31,7 @@ export class AppComponent {
       Y: 0,
       Duration: null,
       earliestStart: null,
-      earlisteEnd: null,
+      earliestEnd: null,
       latestEnd: null,
       latestStart: null
     }
