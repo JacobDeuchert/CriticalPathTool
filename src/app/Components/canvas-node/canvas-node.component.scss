@@ -2,12 +2,49 @@
     height: 80px;
     width: 200px;
     position: relative;
-    border: 2px solid black;
+    border: 1px solid rgba($color: #000000, $alpha: 0.7);
+    background-color: white;
 }
+
+:host-context(.cdk-drag-dragging) .container {
+    border: none;
+    -webkit-box-shadow: 0px 0px 5px 1px rgba(0,102,255,1);
+    -moz-box-shadow: 0px 0px 5px 1px rgba(0,102,255,1);
+    box-shadow: 0px 0px 5px 1px rgba(0,102,255,1);
+}
+
+.name-input {
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    border-left: 1px solid rgba($color: #000000, $alpha: 0.7);
+}
+
+.duration-input {
+    border-bottom: none;
+    border-right: none;
+    border-top: 1px solid rgba($color: #000000, $alpha: 0.7);
+    border-left: none;
+}
+
+.totalBuffer {
+    border-bottom: none;
+    border-right: none;
+    border-top: 1px solid rgba($color: #000000, $alpha: 0.7);
+    border-left: 1px solid rgba($color: #000000, $alpha: 0.7);
+}
+
+.freeBuffer {
+    border-bottom: none;
+    border-right: none;
+    border-top: 1px solid rgba($color: #000000, $alpha: 0.7);
+    border-left: 1px solid rgba($color: #000000, $alpha: 0.7);
+}
+
 
 .predeccessors-line-end {
     position: absolute;
-    border: 4px black solid;
+    border: 4px #404241 solid;
     border-radius: 50%;
     top: calc(50% - 4px);
     left: -4px;
@@ -15,7 +52,7 @@
 
 .successors-line-start {
     position: absolute;
-    border: 4px black solid;
+    border: 4px #404241 solid;
     border-radius: 50%;
     display: flex;
     top: calc(50% - 4px);
@@ -40,12 +77,15 @@
         left: calc(100% - 10px);
 
     }
-
 }
 
-input::placeholder {
-    padding-left: 5px;
+.buffer-field {
+    width: 33%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+
 
 :host-context(.cdk-drag-dragging) .mat-icon-button {
     pointer-events: none;

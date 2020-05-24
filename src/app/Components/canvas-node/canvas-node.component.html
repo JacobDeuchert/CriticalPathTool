@@ -1,67 +1,94 @@
-<div class="container" [ngClass]="{'predeccessors': node.Predeccessors.length > 0 , 'successors':  node.Successors.length > 0}">
-
-    <div class="content">
-        <div style="display: flex;">
-            <button mat-icon-button (click)="delete.emit(node)">
-                <mat-icon>
-                    delete
-                </mat-icon>
-            </button>
-            <input style="width: 50%;" type="number" placeholder="Dauer" [(ngModel)]="node.Duration">
-            <input style="width: 100%;" placeholder="Name" [(ngModel)]="node.Name">
-        </div>
-
-
-    </div>
-
-
-    <div class="predeccessors-line-end" *ngIf="node.Predeccessors.length > 0"></div>
-    <div  class="successors-line-start" (click)="openNodeSelec(select)">
-        <mat-icon class="add-icon">
-            timeline
+<div
+  class="container"
+  [ngClass]="{
+    predeccessors: node.Predeccessors.length > 0,
+    successors: node.Successors.length > 0
+  }"
+>
+  <div style="height: 100%">
+    <div style="display: flex; height: 50%">
+      <button mat-icon-button (click)="delete.emit(node)">
+        <mat-icon>
+          delete
         </mat-icon>
-
-        <mat-select multiple [value]="node.Successors" (selectionChange)="changeConnectionSelection($event)" #select class="node-connection-select">
-            <mat-option *ngFor="let node of availableNodes" [value]="node.Id">
-                {{node.Name}}
-            </mat-option>
-        </mat-select>
+      </button>
+      <input  class="name-input" style="width: 100%;" placeholder="Name" [(ngModel)]="node.Name">
     </div>
 
-    <div class="badge badge-top-left">
-        1
-    </div>
+    <div style="display: flex; height: 50%">
+        
+        <input
+        class="duration-input"
+        style="width: 33%;"
+        type="number"
+        (input)="inputDuration()"
+        placeholder="Dauer"
+        [(ngModel)]="node.Duration"
+      />
 
-    <div class="badge badge-top-right">
-        2
-    </div>
+        <div class="buffer-field totalBuffer">
+            {{node.totalBuffer}}
 
-    <div class="badge badge-bottom-right">
-        3
+        </div>
+        <div class="buffer-field freeBuffer">
+            {{node.freeBuffer}}
+        </div>
     </div>
+  </div>
 
-    <div class="badge badge-bottom-left">
-        4
-    </div>
+  <div
+    class="predeccessors-line-end"
+    *ngIf="node.Predeccessors.length > 0"
+  ></div>
+  <div class="successors-line-start" (click)="openNodeSelec(select)">
+    <mat-icon class="add-icon">
+      timeline
+    </mat-icon>
 
-  
+    <mat-select
+      multiple
+      [value]="node.Successors"
+      (selectionChange)="changeConnectionSelection($event)"
+      #select
+      class="node-connection-select"
+    >
+      <mat-option *ngFor="let node of availableNodes" [value]="node.Id">
+        {{ node.Name }}
+      </mat-option>
+    </mat-select>
+  </div>
+
+  <div class="badge badge-top-left">
+    {{ node.earliestStart }}
+  </div>
+
+  <div class="badge badge-top-right">
+    {{ node.earliestEnd }}
+  </div>
+
+  <div class="badge badge-bottom-right">
+    {{ node.latestEnd }}
+  </div>
+
+  <div class="badge badge-bottom-left">
+    {{ node.latestStart }}
+  </div>
 </div>
 
-
 <mat-menu #nodeMenu="matMenu">
-    <ng-template  matMenuContent>
-        <ng-container *ngIf="availableNodes.length > 0 else noNodesTemplate">
-            <ng-container *ngFor="let successor of availableNodes">
-                <button mat-menu-item (click)="connectoToNode(successor)">{{successor.Name}}</button>
-            </ng-container>
-        </ng-container>
+  <ng-template matMenuContent>
+    <ng-container *ngIf="availableNodes.length > 0; else noNodesTemplate">
+      <ng-container *ngFor="let successor of availableNodes">
+        <button mat-menu-item (click)="connectoToNode(successor)">
+          {{ successor.Name }}
+        </button>
+      </ng-container>
+    </ng-container>
 
-        <ng-template #noNodesTemplate>
-
-            <span>
-                No nodes to connect available
-            </span>
-        </ng-template>
-     
+    <ng-template #noNodesTemplate>
+      <span>
+        No nodes to connect available
+      </span>
     </ng-template>
+  </ng-template>
 </mat-menu>

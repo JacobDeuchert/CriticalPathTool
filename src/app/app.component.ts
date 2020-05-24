@@ -17,7 +17,10 @@ export class AppComponent {
   public nodes: CanvasNode[];
 
   constructor() {
-    this.nodes = [];
+
+    const storedNodes = localStorage.getItem('Plan');
+
+    this.nodes = storedNodes ? JSON.parse(storedNodes) as CanvasNode[] : []; 
   }
 
   public addNode(): void {
@@ -33,9 +36,15 @@ export class AppComponent {
       earliestStart: null,
       earliestEnd: null,
       latestEnd: null,
-      latestStart: null
+      latestStart: null,
+      freeBuffer: null,
+      totalBuffer: null
     }
 
     this.nodes.push(newNode);
+  }
+
+  public saveNodes(): void {
+    localStorage.setItem('Plan' , JSON.stringify(this.nodes));
   }
 }

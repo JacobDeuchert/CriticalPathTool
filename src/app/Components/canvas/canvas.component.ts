@@ -1,5 +1,5 @@
 import { CanvasNode } from './../../Models/CanvasNode';
-import { Component, OnInit, Input, ViewChildren, QueryList, OnChanges, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, ViewChildren, QueryList, OnChanges, ViewChild, ElementRef, AfterViewInit, Renderer2, HostListener } from '@angular/core';
 import { CdkDragStart, CdkDragEnd } from '@angular/cdk/drag-drop';
 
 @Component({
@@ -7,69 +7,89 @@ import { CdkDragStart, CdkDragEnd } from '@angular/cdk/drag-drop';
   templateUrl: './canvas.component.html',
   styleUrls: ['./canvas.component.scss']
 })
-export class CanvasComponent implements OnChanges {
+export class CanvasComponent implements OnChanges, AfterViewInit {
 
 
   @Input() nodes: CanvasNode[];
 
 
 
+  private _canvasWidth: number;
+  private _canvasHeight: number;
   
 
   // Gets the svg element
    @ViewChild('svg', {static: true}) svg: ElementRef<SVGElement>
 
+   // Gets the container of the nodes and the svg element
+   @ViewChild('canvas', {static: true}) canvas: ElementRef<HTMLElement>
+
+   @HostListener('window:resize') resize() {
+     this._setCanvasSize(this.nodes);
+   }
 
 
-  constructor() {
+// Injecting the angular renderer service
+  constructor(private renderer: Renderer2) {
 
  }
 
   // gets called everytime the nodes input changes
   public ngOnChanges(): void {
     if (this.nodes && this.nodes.length > 0) {
-      this._setupLines(this.nodes);
+      this.calculateBuffer(true);
+
+      if (this.canvas) {
+        this._setCanvasSize(this.nodes);
+      }
+
     }
   }
 
-
-  public startDraggingNode(node: CanvasNode, dragEvent: CdkDragStart): void {
-    console.log(node);
-    
-    node.Predeccessors.forEach(id => {
-      const predeccessor = this._getNodeById(id);
-
-      this._destroyLineBeweenNodes(predeccessor , node);
-    });
-
-    node.Successors.forEach(id => {
-      const successor = this._getNodeById(id);
-
-      this._destroyLineBeweenNodes(node , successor);
-    });
+  public ngAfterViewInit(): void {
+    this._setCanvasSize(this.nodes);
   }
 
-  public endDraggingNode(node: CanvasNode , dragEvent: CdkDragEnd): void {
 
+
+  public dragNode(node: CanvasNode, dragEvent: CdkDragStart): void {
     const draggedElement = dragEvent.source.element.nativeElement;
 
+    this._scrollOnDrag(draggedElement, node);
+
+
+    const canvasElement = this.canvas.nativeElement;
+    const scrollContainer = canvasElement.parentElement;
+
+
+
     // gets position relative to viewport
-    const positionRectToViewport = draggedElement.getBoundingClientRect();
-  
+    const nodePositionInViewport = draggedElement.getBoundingClientRect();
+
+    const canvasPositionInViewport = canvasElement.getBoundingClientRect();
+
+
+    
+    // we need to consider the scroll because the position is relative to the viewport and not the scroll
+    const leftScroll = canvasElement.parentElement.scrollLeft;
+    const topScroll = canvasElement.parentElement.scrollTop;
+
+
     // substract the header height to get the position relative to the parent
-    node.X = positionRectToViewport.x;
-    node.Y = positionRectToViewport.y - 64;
+    node.Y = nodePositionInViewport.y - 64 + topScroll;
+    node.X = nodePositionInViewport.x + leftScroll;
+   
 
     node.Predeccessors.forEach(id => {
       const predeccessor = this._getNodeById(id);
 
-      this._createLineBetweenNodes(predeccessor , node);
+      this._changeLineBetweenNodes(predeccessor , node);
     });
 
     node.Successors.forEach(id => {
       const successor = this._getNodeById(id);
 
-      this._createLineBetweenNodes(node , successor);
+      this._changeLineBetweenNodes(node , successor);
     });
 
   }
@@ -80,6 +100,8 @@ export class CanvasComponent implements OnChanges {
 
 
     this._createLineBetweenNodes(fromNode, toNode);
+
+    this.calculateBuffer();
   }
 
   public disconnectNodes(fromNode: CanvasNode, toNode: CanvasNode): void {
@@ -90,6 +112,8 @@ export class CanvasComponent implements OnChanges {
     fromNode.Successors.splice(toIndex , 1);
 
     this._destroyLineBeweenNodes(fromNode, toNode);
+
+    this.calculateBuffer();
 
   }
 
@@ -119,20 +143,23 @@ export class CanvasComponent implements OnChanges {
     this.nodes.splice(nodeIndex, 1);
   }
 
-  public calculateBuffer(): void {
-    this.
+  public calculateBuffer(init?: boolean): void {
+    const endNodes = this.nodes.filter(x => x.Successors.length === 0);
+    const startNodes = this.nodes.filter(x => x.Predeccessors.length === 0);
 
-  }
-
-  private _setupLines(nodes: CanvasNode[]): void {
-    nodes.forEach(node => {
-
-      node.Successors.forEach(id => {
-        const successor = this._getNodeById(id);
-        this._createLineBetweenNodes(node, successor);
-      });
-
+    endNodes.forEach(node => {
+      this._calculateEarliest(node);
     });
+
+    startNodes.forEach(node => {
+      this._calculateLatest(node);
+    });
+
+    startNodes.forEach( node => {
+      this._calculateBuffer(node);
+    })
+
+    this._setupLines(this.nodes, init);
   }
 
   public getAvailableNodes(node: CanvasNode): CanvasNode[] {
@@ -140,6 +167,21 @@ export class CanvasComponent implements OnChanges {
     return this.nodes.filter( x => !nodesInPath.includes(x));
   }
 
+  private _setupLines(nodes: CanvasNode[], init?: boolean): void {
+    nodes.forEach(node => {
+
+      node.Successors.forEach(id => {
+        const successor = this._getNodeById(id);
+
+        if (init) {
+          this._createLineBetweenNodes(node, successor);
+        } else {
+          this._changeLineBetweenNodes(node, successor);
+        }
+      });
+
+    });
+  }
 
   private _getNodesInPath(node: CanvasNode): CanvasNode[] {
     let nodesInPath: CanvasNode[] = [node];
@@ -168,11 +210,24 @@ export class CanvasComponent implements OnChanges {
   private _createLineBetweenNodes(fromNode: CanvasNode, toNode: CanvasNode): void {
     const lineId = `${fromNode.Id}_${toNode.Id}`;
     const color = fromNode.Critical && toNode.Critical ? 'red' : 'rgba(0 ,0 ,0 ,0.5)';
-    this._createLine(lineId , fromNode.X, fromNode.Y , toNode.X, toNode.Y, color);
+    this._drawLine(lineId , fromNode.X, fromNode.Y , toNode.X, toNode.Y, color, true);
   }
 
-  private _createLine(id: string, x1: number , y1: number, x2: number, y2: number, color: string): void {
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  private _changeLineBetweenNodes(fromNode: CanvasNode, toNode: CanvasNode): void {
+    const lineId = `${fromNode.Id}_${toNode.Id}`;
+    const color = fromNode.Critical && toNode.Critical ? 'red' : 'rgba(0 ,0 ,0 ,0.5)';
+    this._drawLine(lineId , fromNode.X, fromNode.Y , toNode.X, toNode.Y, color, false);
+  }
+
+  private _drawLine(id: string, x1: number , y1: number, x2: number, y2: number, color: string , newLine?: boolean): void {
+
+    let line: SVGLineElement;
+
+    if (newLine) {
+      line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    } else {
+      line = document.getElementById(id) as any;
+    }
 
     line.setAttribute('id' , id);
     line.style.strokeWidth = '2px';
@@ -184,6 +239,7 @@ export class CanvasComponent implements OnChanges {
     line.setAttribute('x2', x2.toString());
     line.setAttribute('y2', (y2 + 42).toString());
 
+
     this.svg.nativeElement.appendChild(line);
   }
 
@@ -191,18 +247,141 @@ export class CanvasComponent implements OnChanges {
     return this.nodes.find(x => x.Id === id);
   }
 
-  private _getEarliestStart(node: CanvasNode): number {
+  private _calculateEarliest(node: CanvasNode): number {
 
-    const highestPredecLE = node.Predeccessors.map(
-       predecessor => this._getEarliestStart(this._getNodeById(predecessor)))
+    const highestPredecEE = node.Predeccessors.map(
+       predecessor => this._calculateEarliest(this._getNodeById(predecessor)))
        .sort((a, b) => b - a)[0] ?? 0;
 
-    node.earliestStart = highestPredecLE;
-    node.earliestEnd = highestPredecLE + node.Duration;   
+    node.earliestStart = highestPredecEE;
+    node.earliestEnd = highestPredecEE + node.Duration;   
 
     return node.earliestEnd;
   }
 
+ private _calculateLatest(node: CanvasNode): number {
+   const lowestSucLS = node.Successors.map(
+    predecessor => this._calculateLatest(this._getNodeById(predecessor)))
+    .sort((a, b) => a - b)[0] ?? node.earliestEnd;
 
+    node.latestEnd = lowestSucLS;
+    node.latestStart = lowestSucLS + - node.Duration;
+    return node.latestStart;
+ } 
+
+ private _calculateBuffer(node: CanvasNode): void {
+   const lowestSucES = node.Successors.map(succesors => {
+     const successorNode = this._getNodeById(succesors);
+     this._calculateBuffer(successorNode);
+    return successorNode.earliestStart }
+   ).sort( (a, b) => a - b)[0] ?? node.earliestEnd;
+
+   node.totalBuffer = node.latestEnd - node.earliestEnd;
+
+   node.freeBuffer = lowestSucES - node.earliestEnd;
+
+   node.Critical = node.totalBuffer === 0 && node.freeBuffer === 0;
+ }
+
+ private _setCanvasSize(nodes: CanvasNode[]): void {
+   const canvasElement = this.canvas.nativeElement;
+
+
+   const parentSize = canvasElement.parentElement.getBoundingClientRect();
+
+   console.log(parentSize);
+
+   let maxNodesXPosition = 0;
+   let maxNodesYPosition = 0;
+
+   nodes.forEach(node => {
+
+    if (node.X > maxNodesXPosition) {
+      maxNodesXPosition = node.X;
+    }
+
+    if (node.Y > maxNodesYPosition) {
+      maxNodesYPosition = node.Y;
+    }
+   });
+
+    // the width is calculated by the nodes max x value, the width of a node and a 50px margin
+   const width = maxNodesXPosition + 200 + 50;
+    // the height is calculated by the nodes max y value, the height of a node and a 80px margin
+   const height = maxNodesYPosition + 50 + 80
+
+   console.log(width);
+  // assign the width only if is bigger than the current canvas size
+   if (width > parentSize.width) {
+     this.renderer.setStyle(canvasElement, 'width' , width + 'px' )
+   } else {
+     this.renderer.setStyle(canvasElement, 'width' , '100%');
+   }
+
+
+     // assign the width only if is bigger than the current canvas size
+     if (height > parentSize.height) {
+      this.renderer.setStyle(canvasElement, 'height' , height + 'px' )
+    } else {
+      this.renderer.setStyle(canvasElement, 'height' , '100%');
+    }
+ }
+
+
+ private _scrollOnDrag(draggedElement: HTMLElement, node: CanvasNode): void {
   
+  const canvasElement = this.canvas.nativeElement;
+  const scrollContainer = this.canvas.nativeElement.parentElement;
+
+  const currentScrollX = scrollContainer.scrollLeft;
+  const currentScrollY = scrollContainer.scrollTop;
+
+  // PivP stands for Position in Viewport
+  const draggedPiVP = draggedElement.getBoundingClientRect();
+  const canvasPiVP = canvasElement.getBoundingClientRect();
+  const containerPiVP = scrollContainer.getBoundingClientRect();
+
+
+  const viewportWidth = containerPiVP.width;
+  const viewportHeight = containerPiVP.height;
+
+  // top right corner point of the dragged element
+  const topRightPoint = draggedPiVP.x + draggedPiVP.width;
+
+  // horizontal scrolling
+  if (topRightPoint  >= viewportWidth - 30) {
+
+    if (viewportWidth >= canvasPiVP.width - currentScrollX) {
+      canvasElement.style.width = canvasPiVP.width + 10 + 'px';
+    }
+      scrollContainer.scroll({left: currentScrollX + 10, top: currentScrollY});
+  }
+
+  if (draggedPiVP.x <= 30) {
+
+    if (currentScrollX) {
+      scrollContainer.scroll({left: currentScrollX - 10, top: currentScrollY});
+    }
+  }
+
+  // bottom left corner of the dragged element
+  const bottomLeftPoint = draggedPiVP.y + draggedPiVP.height;
+
+  // verticalScrolling
+  if (bottomLeftPoint  >= viewportHeight - 30) {
+
+    if (viewportHeight >= canvasPiVP.height - currentScrollY) {
+      canvasElement.style.height = canvasPiVP.height + 10 + 'px';
+    }
+      scrollContainer.scroll({left: currentScrollX, top: currentScrollY + 10});
+  }
+
+  if (draggedPiVP.y <= (30 + 64)) {
+
+    if (currentScrollY) {
+      scrollContainer.scroll({left: currentScrollX, top: currentScrollY - 10});
+    }
+  }
+ }
+
 }
