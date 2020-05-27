@@ -10,5 +10,13 @@
             <mat-icon>save</mat-icon>
         </button>
 
+      <button mat-icon-button (click)="askForUpload()">
+        <mat-icon>cloud_upload</mat-icon>
+      </button>
     </mat-toolbar-row>
 </mat-toolbar>
+
+
+<!--Html Input for uploading files on clicking button-->
+
+<input type="file" style="height: 0; overflow: hidden; max-width: 0; width: 0" #FileInput (input)="uploadCSV($event)">

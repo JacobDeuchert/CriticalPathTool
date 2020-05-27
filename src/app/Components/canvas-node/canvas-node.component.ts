@@ -1,6 +1,6 @@
 import { CanvasComponent } from './../canvas/canvas.component';
 import { CanvasNode } from './../../Models/CanvasNode';
-import { Component, OnInit, Input, ElementRef, Output, EventEmitter, AfterViewInit, ɵCodegenComponentFactoryResolver } from '@angular/core';
+import { Component, Input, ElementRef, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { Subject } from 'rxjs';
 import {debounceTime} from 'rxjs/operators';
@@ -22,7 +22,7 @@ export class CanvasNodeComponent implements AfterViewInit {
 
   private _durationChanged$: Subject<void>;
 
-  constructor(public elementRef: ElementRef<HTMLElement> , private canvasComponent: CanvasComponent) { 
+  constructor(public elementRef: ElementRef<HTMLElement> , private canvasComponent: CanvasComponent) {
     this.delete = new EventEmitter();
     this.availableNodes = [];
 
@@ -42,7 +42,6 @@ export class CanvasNodeComponent implements AfterViewInit {
  }
 
  public getAvailableNodes(): void {
-   console.log("calling");
    this.availableNodes =  this.canvasComponent.getAvailableNodes(this.node)
  }
 
@@ -86,10 +85,9 @@ export class CanvasNodeComponent implements AfterViewInit {
  }
 
  public positionNode(x: number , y: number): void {
-   console.log('Positioning');
   this.elementRef.nativeElement.parentElement.style.transform = `translate3d(${this.node.X}px , ${this.node.Y}px , 0)`
  }
 
-  
+
 
 }
