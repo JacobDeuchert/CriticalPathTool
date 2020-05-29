@@ -26,8 +26,8 @@ export class CanvasNode  {
     public Successors: string[];
 
     // Array of ids of nodes before this node
-    public Predeccessors: string[];
- 
+    public Predecessors: string[];
+
 
 
 }

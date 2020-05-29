@@ -1,7 +1,7 @@
 <div
   class="container"
   [ngClass]="{
-    predeccessors: node.Predeccessors.length > 0,
+    predeccessors: node.Predecessors.length > 0,
     successors: node.Successors.length > 0
   }"
 >
@@ -16,7 +16,7 @@
     </div>
 
     <div style="display: flex; height: 50%">
-        
+
         <input
         class="duration-input"
         style="width: 33%;"
@@ -37,8 +37,8 @@
   </div>
 
   <div
-    class="predeccessors-line-end"
-    *ngIf="node.Predeccessors.length > 0"
+    class="predecessors-line-end"
+    *ngIf="node.Predecessors.length > 0"
   ></div>
   <div class="successors-line-start" (click)="openNodeSelec(select)">
     <mat-icon class="add-icon">

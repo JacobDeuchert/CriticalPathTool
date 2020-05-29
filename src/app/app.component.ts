@@ -13,22 +13,23 @@ import { v1 as uuidv1 } from 'uuid';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  
+
   public nodes: CanvasNode[];
 
   constructor() {
 
     const storedNodes = localStorage.getItem('Plan');
 
-    this.nodes = storedNodes ? JSON.parse(storedNodes) as CanvasNode[] : []; 
+    this.nodes = storedNodes ? JSON.parse(storedNodes) as CanvasNode[] : [];
   }
 
   public addNode(): void {
+    console.log('AddingNode');
     const newNode: CanvasNode = {
       Id: uuidv1(),
       Name: null,
       Critical: false,
-      Predeccessors: [],
+      Predecessors: [],
       Successors: [],
       X: 0,
       Y: 0,

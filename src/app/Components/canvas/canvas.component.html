@@ -1,12 +1,15 @@
 <div class="canvas example-boundary" #canvas >
 
     <!-- Generate for each node a component and display it inside the canvas -->
+  <ng-container *ngIf="displayNodes">
     <div *ngFor="let node of nodes"
-     cdkDrag
-     (cdkDragMoved)="dragNode(node , $event)"
-     class="node">
-        <app-canvas-node (durationChanged)="calculateBuffer()" [node]="node" (delete)="deleteNode($event)"></app-canvas-node>
+         cdkDrag
+         (cdkDragMoved)="dragNode(node , $event)"
+         class="node">
+      <app-canvas-node (durationChanged)="calculateBuffer()" [node]="node" (delete)="deleteNode($event)"></app-canvas-node>
     </div>
+
+  </ng-container>
 
     <!-- Svg to display the lines between the nodes -->
     <svg  #svg class="line-svg">

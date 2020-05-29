@@ -14,9 +14,8 @@
         <mat-icon>cloud_upload</mat-icon>
       </button>
     </mat-toolbar-row>
+
+
+  <input type="file" style="height: 0; overflow: hidden; max-width: 0; width: 0" #FileInput  (input)="uploadCSV($event)">
 </mat-toolbar>
 
-
-<!--Html Input for uploading files on clicking button-->
-
-<input type="file" style="height: 0; overflow: hidden; max-width: 0; width: 0" #FileInput (input)="uploadCSV($event)">
