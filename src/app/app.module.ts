@@ -8,7 +8,7 @@ import {MatInputModule} from '@angular/material/input'
 import {MatMenuModule} from '@angular/material/menu'
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations'
 import {MatSelectModule} from '@angular/material/select';
-
+import {MatTooltipModule} from '@angular/material/tooltip';
 import { AppComponent } from './app.component';
 import { CanvasComponent } from './Components/canvas/canvas.component';
 import { CanvasNodeComponent } from './Components/canvas-node/canvas-node.component';
@@ -33,7 +33,8 @@ import { FormsModule } from '@angular/forms';
     MatInputModule,
     MatMenuModule,
     FormsModule,
-    MatSelectModule
+    MatSelectModule,
+    MatTooltipModule
   ],
   providers: [],          
   bootstrap: [AppComponent]

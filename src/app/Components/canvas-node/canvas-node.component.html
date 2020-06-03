@@ -26,11 +26,11 @@
         [(ngModel)]="node.Duration"
       />
 
-        <div class="buffer-field totalBuffer">
+        <div class="buffer-field totalBuffer" matTooltip="Gesamter Puffer">
             {{node.totalBuffer}}
 
         </div>
-        <div class="buffer-field freeBuffer">
+        <div class="buffer-field freeBuffer" matTooltip="Freier Puffer">
             {{node.freeBuffer}}
         </div>
     </div>
@@ -58,19 +58,19 @@
     </mat-select>
   </div>
 
-  <div class="badge badge-top-left">
+  <div class="badge badge-top-left" matTooltip="Frühster Anfangszeitpunkt">
     {{ node.earliestStart }}
   </div>
 
-  <div class="badge badge-top-right">
+  <div class="badge badge-top-right" matTooltip="Frühster Endzeitpunkt">
     {{ node.earliestEnd }}
   </div>
 
-  <div class="badge badge-bottom-right">
+  <div class="badge badge-bottom-right" matTooltip="Spätester Endzeitpunkt">
     {{ node.latestEnd }}
   </div>
 
-  <div class="badge badge-bottom-left">
+  <div class="badge badge-bottom-left" matTooltip="Spätester Anfangszeitpunkt">
     {{ node.latestStart }}
   </div>
 </div>

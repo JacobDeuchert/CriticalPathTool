@@ -47,15 +47,19 @@ export class CanvasComponent implements OnChanges, AfterViewInit {
     this.displayNodes = false;
     if (this.nodes && this.nodes.length > 0) {
       this._clearSvg();
-      this._calculateNodePositions(this.nodes);
+
+      // when there is any node without a position we reposition the whole tree
+
+      if (this.nodes.find((node: CanvasNode) => node.X === null || node.Y === null)) {
+        this._calculateNodePositions(this.nodes);
+      }
+
+      
       this.calculateBuffer(true);
 
       if (this.canvas) {
         this._setCanvasSize(this.nodes);
       }
-
-
-
     }
     this.displayNodes = true;
   }
