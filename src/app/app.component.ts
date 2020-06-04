@@ -1,3 +1,4 @@
+import { DataService } from './Services/data.service';
 import { CanvasNodeComponent } from './Components/canvas-node/canvas-node.component';
 import { Component, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { CdkDragEnd } from '@angular/cdk/drag-drop';
@@ -16,17 +17,17 @@ export class AppComponent {
 
   public nodes: CanvasNode[];
 
-  constructor() {
-
-    const storedNodes = localStorage.getItem('Plan');
-
-    this.nodes = storedNodes ? JSON.parse(storedNodes) as CanvasNode[] : [];
+  constructor(private dataService: DataService) {
+    this.dataService.dataChanged$.subscribe((nodes: CanvasNode[]) => {
+      console.log(nodes);
+      this.nodes = nodes
+    });
   }
 
   public addNode(): void {
     console.log('AddingNode');
     const newNode: CanvasNode = {
-      Id: uuidv1(),
+      Id: uuidv1().toString(),
       Name: null,
       Critical: false,
       Predecessors: [],
@@ -43,6 +44,8 @@ export class AppComponent {
     }
 
     this.nodes.push(newNode);
+
+    console.log(this.nodes);
   }
 
   public saveNodes(): void {

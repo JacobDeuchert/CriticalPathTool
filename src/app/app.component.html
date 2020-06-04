@@ -1,5 +1,5 @@
 <div class="app-container">
-  <app-header (SaveContent)="saveNodes()" (DataUploaded)="nodes = $event"></app-header>
+  <app-header (SaveContent)="saveNodes()"></app-header>
   <app-canvas style="height: 100%; overflow: auto;" [nodes]="nodes"> </app-canvas>
 
   <button class="add-btn" (click)="addNode()" mat-mini-fab>
