@@ -22,6 +22,7 @@ export class CanvasNodeComponent implements AfterViewInit {
 
   private _durationChanged$: Subject<void>;
 
+  // inject components element and the parent component with dependency injection
   constructor(public elementRef: ElementRef<HTMLElement> , private canvasComponent: CanvasComponent) {
     this.delete = new EventEmitter();
     this.availableNodes = [];
@@ -34,7 +35,7 @@ export class CanvasNodeComponent implements AfterViewInit {
       this.durationChanged.emit();
     });
   }
-
+// Angular LifecycleHook gets called after component's view is initied
  public ngAfterViewInit(): void {
    if (this.node) {
      this.positionNode(this.node.X, this.node.Y);

@@ -1,3 +1,5 @@
+@import '~@angular/material/theming';
+
 .app-container {
     display: flex;
     flex-direction: column;
@@ -9,17 +11,33 @@
 .drawer-header {
     display: flex;
     align-items: center;
-    padding:  2px 5px;
-    border-bottom: 1px solid  rgba(0, 0, 0, 0.4)
+    padding-right: 60px;
 }
 
 .plan-item {
-    padding: 14px 8px;
+    padding: 8px 8px;
     font-size: 18;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
     cursor: pointer;
-    border-bottom: 1px solid  rgba(0, 0, 0, 0.1)
+    border-bottom: 1px solid  rgba(0, 0, 0, 0.1);
+
+    .mat-icon-button {
+        visibility: hidden;
+    }
 }
 
 .plan-item:hover {
     background-color: rgba(0, 0, 0, 0.15);
+
+    .mat-icon-button {
+        visibility: visible;
+    }
+}
+
+.selected {
+    background-color: rgba(202, 86, 86, 0.15);
+    padding: 15px 8px;
 }

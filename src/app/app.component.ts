@@ -21,18 +21,24 @@ export class AppComponent {
 
   public nodes: CanvasNode[];
 
+  public selectedPlanId: string;
+  public selectedPlanName: string;
+
   public plans: ProjectPlan[]
 
+  // Gets the drawer component
   @ViewChild('drawer') drawer: MatDrawer; 
 
   // Inject the dataservice and the dialog service with dependency injection
   constructor(private dataService: DataService, private matDialog: MatDialog) {
 
-    this.plans = [];
+    this.plans = this.dataService.plans;
 
-    this.dataService.planSelected$.subscribe((nodes: CanvasNode[]) => {
-      console.log(nodes);
-      this.nodes = nodes
+    // listen to the plan selection
+    this.dataService.planSelected$.subscribe((plan: ProjectPlan) => {
+      this.nodes = plan.Nodes
+      this.selectedPlanId = plan.Id;
+      this.selectedPlanName = plan.Name;
     });
   }
 
@@ -53,13 +59,22 @@ export class AppComponent {
     });
   }
 
-
-  public saveNodes(): void {
-    localStorage.setItem('Plan' , JSON.stringify(this.nodes));
+  public deletePlan(plan: ProjectPlan): void {
+    this.dataService.deletePlan(plan.Id);
   }
 
+  public selectPlan(plan: ProjectPlan): void {
+    this.dataService.selectPlan(plan);
+    this.closeDrawer()
+  }
+
+
+  public save(): void {
+    this.dataService.saveAll();
+  }
+
+
   public openDrawer(): void {
-    console.log(this.drawer);
     this.drawer.open();
   }
 

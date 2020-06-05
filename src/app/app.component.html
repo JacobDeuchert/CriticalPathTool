@@ -6,13 +6,20 @@
         <button mat-icon-button (click)="closeDrawer()">
           <mat-icon>keyboard_arrow_left</mat-icon>
         </button>
-        Projekt Planner
+        Netzpläne
       </mat-toolbar-row>
      
     </mat-toolbar>
 
-    <div *ngFor="let plan of plans" class="plan-item mat-body">
-      {{plan.Name}}
+    <div *ngFor="let plan of plans" (click)="selectPlan(plan)" class="plan-item mat-body" [ngClass]="{'selected': selectedPlanId === plan.Id}">
+      <span>
+        {{plan.Name}}
+      </span>
+     <button mat-icon-button (click)="deletePlan(plan)" *ngIf="plan.Id !== selectedPlanId">
+       <mat-icon>
+         delete
+       </mat-icon>
+     </button>
     </div>
 
     <button mat-button style="width: 100%; padding: 8px; text-align: start;" color="accent" (click)="createNewPlan()">
@@ -24,7 +31,7 @@
 
   <mat-drawer-content >
     <div class="app-container">
-      <app-header (SaveContent)="saveNodes()" (MenuOpened)="openDrawer()"></app-header>
+      <app-header (SaveContent)="save()" [SelectedPlanName]="selectedPlanName" (MenuOpened)="openDrawer()"></app-header>
       <app-canvas style="height: 100%; overflow: auto;" [nodes]="nodes"> </app-canvas>
     </div>    
   </mat-drawer-content>

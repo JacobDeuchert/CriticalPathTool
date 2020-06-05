@@ -460,6 +460,4 @@ export class CanvasComponent implements OnChanges {
       this._positionNode(successor);
     });
   }
-
-  private _calculate
 }

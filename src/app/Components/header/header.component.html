@@ -3,17 +3,21 @@
       <button color="accent" style="margin-right: 15px" mat-icon-button (click)="openMenu()">
         <mat-icon>menu</mat-icon>
     </button>
-        Projekt Planner
+        Netzplan Tool
 
         <div style="margin-left: auto;">
 
         </div>
 
-        <button mat-icon-button (click)="save()">
+        <div style="margin-right: auto;">
+          {{SelectedPlanName}}
+        </div>
+
+        <button mat-icon-button style="margin-right: 5px;" (click)="save()">
             <mat-icon>save</mat-icon>
         </button>
 
-      <button mat-icon-button (click)="askForUpload()">
+      <button mat-icon-button style="margin-right: 5px;" (click)="askForUpload()">
         <mat-icon>cloud_upload</mat-icon>
       </button>
 

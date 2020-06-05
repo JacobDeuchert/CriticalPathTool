@@ -1,5 +1,5 @@
 import { DataService } from './../../Services/data.service';
-import { Component, OnInit, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ViewChild, ElementRef, Input } from '@angular/core';
 
 import { CanvasNode } from '../../Models/CanvasNode';
 @Component({
@@ -9,6 +9,7 @@ import { CanvasNode } from '../../Models/CanvasNode';
 })
 export class HeaderComponent  {
 
+  @Input() SelectedPlanName: string
 
   @Output() SaveContent: EventEmitter<void>;
 
