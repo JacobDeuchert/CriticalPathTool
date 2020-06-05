@@ -2,19 +2,26 @@ import { Subject, BehaviorSubject, Observable } from 'rxjs';
 import { CanvasNode } from './../Models/CanvasNode';
 import { Injectable } from '@angular/core';
 import * as Papa from 'papaparse';
+import { ProjectPlan } from '../Models/ProjectPlan';
 @Injectable({
   providedIn: 'root',
 })
 export class DataService {
-  public nodes: CanvasNode[];
+ 
+  public plans: ProjectPlan[];
 
-  public dataChanged$: Observable<CanvasNode[]>;
+  public planSelected$: Observable<CanvasNode[]>;
 
   private _dataExchange: BehaviorSubject<CanvasNode[]>;
 
   constructor() {
     this._dataExchange = new BehaviorSubject<CanvasNode[]>([]);
-    this.dataChanged$ = this._dataExchange.asObservable();
+    this.planSelected$ = this._dataExchange.asObservable();
+
+
+    const localData = localStorage.getItem('Data');
+
+    this.plans = localData ? JSON.parse(localData) : [];
 
 
     const storedNodes = localStorage.getItem('Plan');
@@ -24,6 +31,9 @@ export class DataService {
     this._dataExchange.next(nodes)
   }
 
+  public saveAll(): void {
+
+  }
   // gets csv file and parses the data to a CanvasNode[]
   public createNodesFromFile(csvFile: Blob): void {
     Papa.parse(csvFile, {

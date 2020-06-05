@@ -136,5 +136,8 @@
       }
     }
   },
-  "defaultProject": "CriticalPathTool"
+  "defaultProject": "CriticalPathTool",
+  "cli": {
+    "analytics": "6582cf4a-074d-4ab0-a22b-57976fc895f2"
+  }
 }

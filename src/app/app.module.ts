@@ -9,11 +9,14 @@ import {MatMenuModule} from '@angular/material/menu'
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations'
 import {MatSelectModule} from '@angular/material/select';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatDialogModule} from '@angular/material/dialog';  
 import { AppComponent } from './app.component';
 import { CanvasComponent } from './Components/canvas/canvas.component';
 import { CanvasNodeComponent } from './Components/canvas-node/canvas-node.component';
 import { HeaderComponent } from './Components/header/header.component';
 import { FormsModule } from '@angular/forms';
+import { PlanDialogComponent } from './Components/plan-dialog/plan-dialog.component';
 
 
 @NgModule({
@@ -21,7 +24,8 @@ import { FormsModule } from '@angular/forms';
     AppComponent,
     CanvasComponent,
     CanvasNodeComponent,
-    HeaderComponent
+    HeaderComponent,
+    PlanDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -34,7 +38,9 @@ import { FormsModule } from '@angular/forms';
     MatMenuModule,
     FormsModule,
     MatSelectModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatSidenavModule,
+    MatDialogModule
   ],
   providers: [],          
   bootstrap: [AppComponent]

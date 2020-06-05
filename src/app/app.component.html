@@ -1,8 +1,31 @@
-<div class="app-container">
-  <app-header (SaveContent)="saveNodes()"></app-header>
-  <app-canvas style="height: 100%; overflow: auto;" [nodes]="nodes"> </app-canvas>
+<mat-drawer-container style="height: 100%; width: 100%">
+  <mat-drawer #drawer>
 
-  <button class="add-btn" (click)="addNode()" mat-mini-fab>
-      <mat-icon>add</mat-icon>
-  </button>
-</div>
+    <mat-toolbar class="drawer-header" color="primary">
+      <mat-toolbar-row>
+        <button mat-icon-button (click)="closeDrawer()">
+          <mat-icon>keyboard_arrow_left</mat-icon>
+        </button>
+        Projekt Planner
+      </mat-toolbar-row>
+     
+    </mat-toolbar>
+
+    <div *ngFor="let plan of plans" class="plan-item mat-body">
+      {{plan.Name}}
+    </div>
+
+    <button mat-button style="width: 100%; padding: 8px; text-align: start;" color="accent" (click)="createNewPlan()">
+      <mat-icon style="margin-right: 5px;">add</mat-icon>
+      <span>Plan erstellen</span>
+    </button>
+   
+  </mat-drawer>
+
+  <mat-drawer-content >
+    <div class="app-container">
+      <app-header (SaveContent)="saveNodes()" (MenuOpened)="openDrawer()"></app-header>
+      <app-canvas style="height: 100%; overflow: auto;" [nodes]="nodes"> </app-canvas>
+    </div>    
+  </mat-drawer-content>
+</mat-drawer-container>

@@ -6,8 +6,20 @@
     overflow: hidden;
 }
 
-.add-btn {
-    position: absolute;
-    bottom: 50px;
-    right: 50px;
+.drawer-header {
+    display: flex;
+    align-items: center;
+    padding:  2px 5px;
+    border-bottom: 1px solid  rgba(0, 0, 0, 0.4)
+}
+
+.plan-item {
+    padding: 14px 8px;
+    font-size: 18;
+    cursor: pointer;
+    border-bottom: 1px solid  rgba(0, 0, 0, 0.1)
+}
+
+.plan-item:hover {
+    background-color: rgba(0, 0, 0, 0.15);
 }

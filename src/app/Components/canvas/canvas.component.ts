@@ -13,13 +13,14 @@ import {
   HostListener,
 } from '@angular/core';
 import { CdkDragStart, CdkDragEnd } from '@angular/cdk/drag-drop';
+import { v1 as uuidv1 } from 'uuid';
 
 @Component({
   selector: 'app-canvas',
   templateUrl: './canvas.component.html',
   styleUrls: ['./canvas.component.scss'],
 })
-export class CanvasComponent implements OnChanges, AfterViewInit {
+export class CanvasComponent implements OnChanges {
   @Input() nodes: CanvasNode[];
 
   public displayNodes: boolean;
@@ -35,11 +36,12 @@ export class CanvasComponent implements OnChanges, AfterViewInit {
     this.displayNodes = false;
   }
 
+  // listen for window resize and calculate the new cavas size
   @HostListener('window:resize') resize() {
-    // this._setCanvasSize(this.nodes);
+    this._setCanvasSize(this.nodes);
   }
 
-  // gets called everytime the nodes input changes
+  // Angular LifecycleHook:  gets called everytime the nodes input changes
   public ngOnChanges(): void {
     this._clearSvg();
     this.displayNodes = false;
@@ -60,12 +62,11 @@ export class CanvasComponent implements OnChanges, AfterViewInit {
     this.displayNodes = true;
   }
 
-  public ngAfterViewInit(): void {
-    // this._setCanvasSize(this.nodes);
-  }
 
   public dragNode(node: CanvasNode, dragEvent: CdkDragStart): void {
     const draggedElement = dragEvent.source.element.nativeElement;
+
+    // handle scroll when draggin
     this._scrollOnDrag(draggedElement, node);
 
     const canvasElement = this.canvas.nativeElement;
@@ -81,6 +82,7 @@ export class CanvasComponent implements OnChanges, AfterViewInit {
     node.Y = nodePositionInViewport.y - 64 + topScroll;
     node.X = nodePositionInViewport.x + leftScroll;
 
+    // change all lines the dragged node is connected to
     node.Predecessors.forEach((id) => {
       const predeccessor = this._getNodeById(id);
 
@@ -114,6 +116,31 @@ export class CanvasComponent implements OnChanges, AfterViewInit {
 
     this.calculateBuffer();
   }
+
+  public addNode(): void {
+    console.log('AddingNode');
+    const newNode: CanvasNode = {
+      Id: uuidv1().toString(),
+      Name: null,
+      Critical: false,
+      Predecessors: [],
+      Successors: [],
+      X: 0,
+      Y: 0,
+      Duration: null,
+      earliestStart: null,
+      earliestEnd: null,
+      latestEnd: null,
+      latestStart: null,
+      freeBuffer: null,
+      totalBuffer: null
+    }
+
+    this.nodes.push(newNode);
+
+    console.log(this.nodes);
+  }
+
 
   public deleteNode(node: CanvasNode): void {
     const nodeIndex = this.nodes.indexOf(node);
@@ -158,7 +185,7 @@ export class CanvasComponent implements OnChanges, AfterViewInit {
     });
 
     this._setupLines(this.nodes, init);
-    console.log("SetupLines");
+
   }
 
   public getAvailableNodes(node: CanvasNode): CanvasNode[] {
@@ -196,12 +223,6 @@ export class CanvasComponent implements OnChanges, AfterViewInit {
 
     this.svg.nativeElement.childNodes.forEach(x => nodes.push(x));
     nodes.forEach(x => x.remove());
-
-    console.log(this.svg.nativeElement.childNodes);
-    // this.svg.nativeElement.childNodes.forEach((node) => {
-    //   console.log(node);
-    //   node.remove();
-    // });
   }
 
   // Gets the longest path to the start
@@ -224,10 +245,7 @@ export class CanvasComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  private _destroyLineBeweenNodes(
-    fromNode: CanvasNode,
-    toNode: CanvasNode
-  ): void {
+  private _destroyLineBeweenNodes(fromNode: CanvasNode, toNode: CanvasNode): void {
     const lineId = `${fromNode.Id}_${toNode.Id}`;
     const line = document.getElementById(lineId);
 
@@ -236,36 +254,21 @@ export class CanvasComponent implements OnChanges, AfterViewInit {
     }
   }
 
-  private _createLineBetweenNodes(
-    fromNode: CanvasNode,
-    toNode: CanvasNode
-  ): void {
+  private _createLineBetweenNodes(fromNode: CanvasNode, toNode: CanvasNode): void {
     const lineId = `${fromNode.Id}_${toNode.Id}`;
     const color =
       fromNode.Critical && toNode.Critical ? 'red' : 'rgba(0 ,0 ,0 ,0.5)';
     this._drawLine(lineId, fromNode.X ?? 0, fromNode.Y ?? 0,toNode.X ?? 0,toNode.Y ?? 0, color, true);
   }
 
-  private _changeLineBetweenNodes(
-    fromNode: CanvasNode,
-    toNode: CanvasNode
-  ): void {
+  private _changeLineBetweenNodes(fromNode: CanvasNode, toNode: CanvasNode): void {
     const lineId = `${fromNode.Id}_${toNode.Id}`;
     const color =
       fromNode.Critical && toNode.Critical ? 'red' : 'rgba(0 ,0 ,0 ,0.5)';
-    this._drawLine(
-      lineId,
-      fromNode.X,
-      fromNode.Y,
-      toNode.X,
-      toNode.Y,
-      color,
-      false
-    );
+    this._drawLine(lineId, fromNode.X, fromNode.Y, toNode.X, toNode.Y, color, false);
   }
 
-  private _drawLine(id: string, x1: number,y1: number,x2: number,y2: number,color: string,newLine?: boolean
-  ): void {
+  private _drawLine(id: string, x1: number,y1: number,x2: number,y2: number,color: string,newLine?: boolean): void {
     let line: SVGLineElement;
 
     if (newLine) {
@@ -391,7 +394,7 @@ export class CanvasComponent implements OnChanges, AfterViewInit {
     // horizontal scrolling
     if (topRightPoint >= viewportWidth - 30) {
       if (viewportWidth >= canvasPiVP.width - currentScrollX) {
-        canvasElement.style.width = canvasPiVP.width + 10 + "px";
+        canvasElement.style.width = canvasPiVP.width + 10 + 'px';
       }
       scrollContainer.scroll({
         left: currentScrollX + 10,
@@ -457,4 +460,6 @@ export class CanvasComponent implements OnChanges, AfterViewInit {
       this._positionNode(successor);
     });
   }
+
+  private _calculate
 }

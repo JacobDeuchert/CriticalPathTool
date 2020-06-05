@@ -12,12 +12,15 @@ export class HeaderComponent  {
 
   @Output() SaveContent: EventEmitter<void>;
 
+  @Output() MenuOpened: EventEmitter<void>;
+
 
   // Gets the file input element
   @ViewChild('FileInput') inputRef: ElementRef<HTMLInputElement>;
 
   constructor(private dataService: DataService) {
     this.SaveContent = new EventEmitter();
+    this.MenuOpened = new EventEmitter();
    }
 
    public save(): void {
@@ -26,6 +29,10 @@ export class HeaderComponent  {
 
    public askForUpload(): void {
     this.inputRef.nativeElement.click();
+   }
+
+   public openMenu(): void {
+     this.MenuOpened.emit();
    }
 
 

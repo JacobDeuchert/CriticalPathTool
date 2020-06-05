@@ -1,0 +1,15 @@
+<h2 class="mat-h2">Plan</h2>
+
+<mat-form-field>
+    <input matInput [(ngModel)]="name" placeholder="Name" required>
+</mat-form-field>
+
+
+<div class="dialog-actions">
+    <button mat-button (click)="close()">
+        Abbrechen
+    </button>
+    <button [disabled]="name.length < 1" mat-raised-button color="primary" (click)="save()">
+        Speichern
+    </button>
+</div>
